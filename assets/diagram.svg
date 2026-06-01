@@ -1,0 +1,262 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 680 860"
+  width="2040" height="2580"
+  role="img"
+  style="font-family: 'Inter', 'Segoe UI', sans-serif; background: #0f1117;">
+
+  <title>PRJ-06 Explorador de Relações (GraphRAG) — GIULIA AI Engineering Ecosystem</title>
+  <desc>Pipeline de GraphRAG com Extração Semântica baseada em Neo4j e Tradução Dinâmica NL para Cypher via Llama 3.2 local: Raw Text → GraphExtractor → Neo4j → GraphRetrievalQA → GraphCypherQAChain → Relational Response</desc>
+
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="var(--arr-color, #4a5568)"/>
+    </marker>
+
+    <!-- Glow filter for central database and engine -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #161b27;
+      --border-primary: rgba(255,255,255,0.15);
+      --border-secondary: rgba(255,255,255,0.08);
+      --border-tertiary: rgba(255,255,255,0.05);
+      --text-primary: #e8eaf0;
+      --text-secondary: #8892a4;
+    }
+
+    .th {
+      fill: #e8eaf0;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .ts {
+      fill: #8892a4;
+      font-size: 10px;
+      font-weight: 400;
+    }
+    .arr {
+      stroke-width: 1.2;
+      fill: none;
+    }
+
+    /* Node colors following standard convention */
+    .c-gray  rect { fill: #1e2330; stroke: rgba(148,163,184,0.4); }
+    .c-teal  rect { fill: #0d2d2d; stroke: rgba( 45,212,191,0.45); }
+    .c-purple rect { fill: #1e1530; stroke: rgba(139,92, 246,0.5); }
+    .c-blue  rect { fill: #0d1e3d; stroke: rgba( 59,130,246,0.6); }
+    .c-amber rect { fill: #2d1f00; stroke: rgba(245,158, 11,0.5); }
+    .c-coral rect { fill: #2d1010; stroke: rgba(239, 68, 68,0.5); }
+    .c-green rect { fill: #0d2d1a; stroke: rgba( 34,197, 94,0.5); }
+
+    .c-gray  .th { fill: #94a3b8; }
+    .c-teal  .th { fill: #2dd4bf; }
+    .c-purple .th { fill: #a78bfa; }
+    .c-blue  .th { fill: #60a5fa; }
+    .c-amber .th { fill: #fbbf24; }
+    .c-coral .th { fill: #f87171; }
+    .c-green .th { fill: #4ade80; }
+
+    /* Hover effect */
+    .node { transition: opacity 0.2s; }
+    .node:hover { opacity: 0.82; }
+    .node:hover rect { stroke-width: 1.5 !important; }
+
+    /* Arrow colors per flow */
+    .arr-gray   { stroke: rgba(148,163,184,0.4); }
+    .arr-teal   { stroke: rgba( 45,212,191,0.4); }
+    .arr-purple { stroke: rgba(139, 92,246,0.4); }
+    .arr-blue   { stroke: rgba( 59,130,246,0.5); }
+    .arr-green  { stroke: rgba( 34,197, 94,0.4); }
+    .arr-amber  { stroke: rgba(245, 158, 11, 0.4); }
+    .arr-coral  { stroke: rgba(239, 68, 68, 0.4); }
+
+    /* Phase labels */
+    .phase-label {
+      fill: rgba(255,255,255,0.3);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <!-- BACKGROUND PANEL -->
+  <rect width="680" height="860" fill="#0f1117"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="680" height="56" fill="#0d1117"/>
+  <text x="340" y="24" text-anchor="middle" dominant-baseline="central"
+    font-size="13" font-weight="700" fill="#e8eaf0">
+    PRJ-06 · GraphRAG (Explorador de Relações)
+  </text>
+  <text x="340" y="44" text-anchor="middle" dominant-baseline="central"
+    font-size="10" fill="#a78bfa" letter-spacing="2">
+    KNOWLEDGE GRAPH · NL TO CYPHER · NEO4J LOCAL
+  </text>
+
+  <!-- ══════════════════════════════════════════════════
+       FASE 1: EXTRAÇÃO E INGESTÃO DO GRAFO
+  ══════════════════════════════════════════════════ -->
+  <text class="phase-label" x="40" y="88">FASE 1: EXTRAÇÃO E INGESTÃO DO GRAFO</text>
+  <line x1="40" y1="96" x2="640" y2="96" stroke="rgba(255,255,255,0.05)" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- Node: Raw Text Input -->
+  <g class="node c-amber">
+    <rect x="40" y="110" width="160" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="120" y="130" text-anchor="middle" dominant-baseline="central">📝 Texto Bruto</text>
+    <text class="ts" x="120" y="149" text-anchor="middle" dominant-baseline="central">Artigos, Relatórios ou PDFs</text>
+  </g>
+
+  <!-- Arrow: Texto → Extractor -->
+  <line x1="200" y1="136" x2="238" y2="136" class="arr arr-gray" marker-end="url(#arrow)"/>
+
+  <!-- Node: GraphExtractor -->
+  <g class="node c-teal">
+    <rect x="240" y="110" width="180" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="330" y="130" text-anchor="middle" dominant-baseline="central">🔧 GraphExtractor</text>
+    <text class="ts" x="330" y="149" text-anchor="middle" dominant-baseline="central">Orquestrador de Ingestão</text>
+  </g>
+
+  <!-- Arrow: Extractor <-> LLMGraphTransformer -->
+  <path d="M 420 128 L 458 128" class="arr arr-teal" marker-end="url(#arrow)"/>
+  <path d="M 458 144 L 420 144" class="arr arr-coral" marker-end="url(#arrow)"/>
+
+  <!-- Node: LLMGraphTransformer -->
+  <g class="node c-coral">
+    <rect x="460" y="110" width="180" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="550" y="130" text-anchor="middle" dominant-baseline="central">🤖 GraphTransformer</text>
+    <text class="ts" x="550" y="149" text-anchor="middle" dominant-baseline="central">llama3.2 extrai Nós &amp; Relações</text>
+  </g>
+
+  <!-- Node: Neo4j Graph Database -->
+  <g class="node c-purple" filter="url(#glow)">
+    <rect x="230" y="215" width="220" height="62" rx="10" stroke-width="1.5"/>
+    <text class="th" x="340" y="237" text-anchor="middle" dominant-baseline="central">⚡ Neo4j Graph Database</text>
+    <text class="ts" x="340" y="258" text-anchor="middle" dominant-baseline="central">Porta bolt://localhost:7687</text>
+    <text class="ts" x="340" y="270" text-anchor="middle" dominant-baseline="central">Conhecimento Conectado (Nós/Arestas)</text>
+  </g>
+
+  <!-- Arrow: Extractor → Neo4j -->
+  <line x1="330" y1="162" x2="330" y2="215" class="arr arr-purple" marker-end="url(#arrow)"/>
+
+  <!-- ══════════════════════════════════════════════════
+       FASE 2: MAPEAMENTO DE SCHEMA & PERGUNTA
+  ══════════════════════════════════════════════════ -->
+  <text class="phase-label" x="40" y="325">FASE 2: ATUALIZAÇÃO E MAPEAMENTO DE SCHEMA</text>
+  <line x1="40" y1="333" x2="640" y2="333" stroke="rgba(255,255,255,0.05)" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- Node: Pergunta Relacional -->
+  <g class="node c-amber">
+    <rect x="40" y="350" width="170" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="125" y="370" text-anchor="middle" dominant-baseline="central">🙋 Pergunta Relacional</text>
+    <text class="ts" x="125" y="389" text-anchor="middle" dominant-baseline="central">NL: "Quem trabalha com quem?"</text>
+  </g>
+
+  <!-- Arrow: Pergunta → QA Engine -->
+  <line x1="210" y1="376" x2="238" y2="376" class="arr arr-amber" marker-end="url(#arrow)"/>
+
+  <!-- Node: GraphRetrievalQA -->
+  <g class="node c-blue">
+    <rect x="240" y="350" width="200" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="340" y="370" text-anchor="middle" dominant-baseline="central">🧠 GraphRetrievalQA</text>
+    <text class="ts" x="340" y="389" text-anchor="middle" dominant-baseline="central">Orquestrador de Consulta NL</text>
+  </g>
+
+  <!-- Node: Schema Refresh -->
+  <g class="node c-teal">
+    <rect x="480" y="350" width="160" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="560" y="370" text-anchor="middle" dominant-baseline="central">🔄 Refresh Schema</text>
+    <text class="ts" x="560" y="389" text-anchor="middle" dominant-baseline="central">Mapeia nós em tempo real</text>
+  </g>
+
+  <!-- Arrow: QA -> Schema Refresh -->
+  <path d="M 440 368 L 478 368" class="arr arr-teal" marker-end="url(#arrow)"/>
+  <path d="M 478 384 L 440 384" class="arr arr-blue" marker-end="url(#arrow)"/>
+
+  <!-- Path: Neo4j <-> Schema Refresh -->
+  <path d="M 450 246 L 560 246 L 560 350" class="arr arr-purple" marker-end="url(#arrow)"/>
+
+  <!-- ══════════════════════════════════════════════════
+       FASE 3: TRADUÇÃO CYPHER E EXECUÇÃO
+  ══════════════════════════════════════════════════ -->
+  <text class="phase-label" x="40" y="455">FASE 3: TRADUÇÃO CYPHER E EXECUÇÃO NO NEO4J</text>
+  <line x1="40" y1="463" x2="640" y2="463" stroke="rgba(255,255,255,0.05)" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- Node: Cypher Generator -->
+  <g class="node c-coral">
+    <rect x="40" y="490" width="170" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="125" y="510" text-anchor="middle" dominant-baseline="central">🤖 Cypher LLM (llama3.2)</text>
+    <text class="ts" x="125" y="529" text-anchor="middle" dominant-baseline="central">Tradução NL ➔ query Cypher</text>
+  </g>
+
+  <!-- Node: GraphCypherQAChain -->
+  <g class="node c-blue">
+    <rect x="250" y="490" width="180" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="340" y="510" text-anchor="middle" dominant-baseline="central">⛓️ GraphCypherQAChain</text>
+    <text class="ts" x="340" y="529" text-anchor="middle" dominant-baseline="central">allow_dangerous_requests=True</text>
+  </g>
+
+  <!-- Arrow: QA -> Chain -->
+  <line x1="340" y1="402" x2="340" y2="490" class="arr arr-blue" marker-end="url(#arrow)"/>
+
+  <!-- Arrows: Chain <-> Cypher LLM -->
+  <path d="M 250 508 L 212 508" class="arr arr-coral" marker-end="url(#arrow)"/>
+  <path d="M 212 524 L 250 524" class="arr arr-blue" marker-end="url(#arrow)"/>
+
+  <!-- Node: Cypher Execute -->
+  <g class="node c-purple">
+    <rect x="470" y="490" width="170" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="555" y="510" text-anchor="middle" dominant-baseline="central">⚡ Cypher Transaction</text>
+    <text class="ts" x="555" y="529" text-anchor="middle" dominant-baseline="central">Executa Cypher no Neo4j</text>
+  </g>
+
+  <!-- Arrows: Chain <-> Execute -->
+  <path d="M 430 508 L 468 508" class="arr arr-purple" marker-end="url(#arrow)"/>
+  <path d="M 468 524 L 430 524" class="arr arr-blue" marker-end="url(#arrow)"/>
+
+  <!-- Path: Execute -> Neo4j DB (visual return) -->
+  <path d="M 555 490 L 555 260 L 450 260" class="arr arr-purple" stroke-dasharray="3 3"/>
+
+  <!-- ══════════════════════════════════════════════════
+       FASE 4: SÍNTESE E RETORNO RELACIONAL
+  ══════════════════════════════════════════════════ -->
+  <text class="phase-label" x="40" y="595">FASE 4: SÍNTESE E RETORNO RELACIONAL</text>
+  <line x1="40" y1="603" x2="640" y2="603" stroke="rgba(255,255,255,0.05)" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- Node: Response Synthesizer -->
+  <g class="node c-coral">
+    <rect x="240" y="620" width="200" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="340" y="640" text-anchor="middle" dominant-baseline="central">🤖 QA LLM (llama3.2)</text>
+    <text class="ts" x="340" y="659" text-anchor="middle" dominant-baseline="central">Sintetiza dados em Linguagem Natural</text>
+  </g>
+
+  <!-- Arrow: Chain -> Synthesizer -->
+  <line x1="340" y1="542" x2="340" y2="620" class="arr arr-blue" marker-end="url(#arrow)"/>
+
+  <!-- Node: Output Relational -->
+  <g class="node c-green">
+    <rect x="180" y="710" width="320" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="340" y="730" text-anchor="middle" dominant-baseline="central">✅ Resposta Relacional Inteligente</text>
+    <text class="ts" x="340" y="749" text-anchor="middle" dominant-baseline="central">Navegação determinística multinível entre entidades</text>
+  </g>
+
+  <!-- Arrow: Synthesizer -> Output -->
+  <line x1="340" y1="672" x2="340" y2="710" class="arr arr-green" marker-end="url(#arrow)"/>
+
+  <!-- ══════════════════════════════════════════════════
+       FOOTER — METRICS
+  ══════════════════════════════════════════════════ -->
+  <rect x="40" y="790" width="600" height="24" rx="4"
+    fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+  <text class="ts" x="340" y="802" text-anchor="middle" dominant-baseline="central" opacity="0.7">
+    Métricas Reais: 4 arquivos Python · 305 linhas · 3 testes pytest OK (2.04s) · Epic GARE-67 Done
+  </text>
+</svg>

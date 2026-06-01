@@ -1,0 +1,16 @@
+{
+  "nome": "Explorador de Relações",
+  "tecnica": "GraphRAG",
+  "descricao": "RAG com grafo de conhecimento (Neo4J) para entender relacionamentos complexos",
+  "status": "concluido",
+  "jira_epico": "GARE-67",
+  "data_inicio": "2026-05-07",
+  "caminho_dev": "DEV/PRJ-06_GraphRAG",
+  "caminho_docs": "PLANNING_DOCS/PROJETOS/PRJ-06_GraphRAG",
+  "tasks": {
+    "total": 6,
+    "concluidas": 5,
+    "em_andamento": 0,
+    "pendentes": 1
+  }
+}

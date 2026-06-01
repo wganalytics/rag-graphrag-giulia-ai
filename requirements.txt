@@ -1,0 +1,13 @@
+langchain
+langchain-community
+langchain-ollama
+langchain-neo4j
+langchain-experimental
+neo4j
+fastapi
+uvicorn
+streamlit
+pytest
+pytest-asyncio
+python-dotenv
+
