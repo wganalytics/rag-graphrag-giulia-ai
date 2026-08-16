@@ -1,6 +1,11 @@
 langchain
 langchain-community
 langchain-ollama
+langchain-google-genai
+# langchain-xai/groq 1.x exigem langchain-core 1.x, que quebra o langchain-neo4j.
+langchain-xai<1.0
+langchain-groq<1.0
+langchain-core<1.0
 langchain-neo4j
 langchain-experimental
 neo4j
@@ -10,4 +15,3 @@ streamlit
 pytest
 pytest-asyncio
 python-dotenv
-
