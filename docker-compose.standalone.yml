@@ -1,0 +1,41 @@
+# Neo4j isolado para rodar o PRJ-06 SOZINHO, sem o PRJ-09.
+#
+# POR QUE ESTE ARQUIVO NÃO SE CHAMA MAIS docker-compose.yml
+#
+# O PRJ-09 (Deploy Cloud) subiu para ser o dono da infraestrutura do
+# ecossistema e publica um Neo4j em 7474/7687 — exatamente as portas que este
+# arquivo usava. Rodar os dois derrubava um deles com "port is already
+# allocated", e o nome padrão fazia isso acontecer sem ninguém pedir.
+#
+# Agora:
+#   - PRJ-09 é o caminho normal e mantém as portas canônicas 7474/7687.
+#   - Este arquivo é o caminho isolado, em portas próprias (7475/7688),
+#     e só sobe se for chamado explicitamente.
+#
+# COMO USAR
+#
+#   docker compose -f docker-compose.standalone.yml up -d
+#
+# E aponte o .env deste projeto para a porta alternativa:
+#
+#   NEO4J_URI=bolt://localhost:7688
+#
+# Para voltar ao modo orquestrado, use bolt://localhost:7687 (PRJ-09).
+
+services:
+  neo4j:
+    image: neo4j:5.18.0
+    container_name: prj06_neo4j_standalone
+    ports:
+      - "7475:7474"   # UI HTTP  (7474 pertence ao PRJ-09)
+      - "7688:7687"   # Bolt     (7687 pertence ao PRJ-09)
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      # APOC é altamente recomendado para o GraphRAG com LangChain.
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_PLUGINS=["apoc"]
+    volumes:
+      - ./data/neo4j:/data
+    restart: unless-stopped
